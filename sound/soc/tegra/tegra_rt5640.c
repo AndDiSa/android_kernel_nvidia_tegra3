@@ -103,10 +103,12 @@ static int tegra_rt5640_hw_params(struct snd_pcm_substream *substream,
 	struct snd_soc_card *card = codec->card;
 	struct tegra_rt5640 *machine = snd_soc_card_get_drvdata(card);
 	struct tegra_asoc_platform_data *pdata = machine->pdata;
-	struct tegra30_i2s *i2s = snd_soc_dai_get_drvdata(cpu_dai);
 	int srate, mclk, i2s_daifmt;
 	int err, rate;
+#ifdef CONFIG_MACH_ROTH
+	struct tegra30_i2s *i2s = snd_soc_dai_get_drvdata(cpu_dai);
 	static unsigned initTfa = 0;
+#endif
 
 	srate = params_rate(params);
 	mclk = 256 * srate;
@@ -184,7 +186,7 @@ static int tegra_rt5640_hw_params(struct snd_pcm_substream *substream,
 			return err;
 		}
 	}
-
+#ifdef CONFIG_MACH_ROTH
 	if(machine_is_roth()) {
 		if(initTfa == 1) {
 			i2s_tfa = i2s;
@@ -195,6 +197,7 @@ static int tegra_rt5640_hw_params(struct snd_pcm_substream *substream,
 		}
 		initTfa++;
 	}
+#endif
 	return 0;
 }
 
